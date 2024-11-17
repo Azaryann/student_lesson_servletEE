@@ -10,7 +10,7 @@
 <%Lesson lesson = (Lesson) request.getAttribute("lesson"); %>
 Update Lesson<br><br>
 <form method="post" action="/updateLesson">
-    <input type="hidden" name="lessonId" value="<%=lesson.getId()%>">
+    <input type="hidden" name="id" value="<%=lesson.getId()%>">
     Lesson name: <input type="text" name="name" value="<%=lesson.getName()%>"><br>
     Lesson duration: <input type="number" step="1" min="1" max="120" value="<%=lesson.getDuration()%>"
                             name="duration"><br>

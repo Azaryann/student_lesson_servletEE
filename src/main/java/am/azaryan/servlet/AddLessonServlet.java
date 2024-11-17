@@ -46,7 +46,7 @@ public class AddLessonServlet extends HttpServlet {
                     .lecturerName(lecturerName)
                     .price(price)
                     .build());
-            resp.sendRedirect("/lessons");
+            resp.sendRedirect("/index.jsp");
         }
     }
 }

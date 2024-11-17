@@ -8,7 +8,7 @@
 <%Student student = (Student) request.getAttribute("student"); %>
 Update Student<br><br>
 <form method="post" action="/updateStudent">
-    <input type="hidden" name="studentId" value="<%=student.getId()%>">
+    <input type="hidden" name="id" value="<%=student.getId()%>">
     Student name: <input type="text" name="name" value="<%=student.getName()%>"><br>
     Student surname: <input type="text" value="<%=student.getSurname()%>" name="surname"><br>
     Student email: <input type="text" name="email" value="<%=student.getEmail()%>"><br>

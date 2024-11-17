@@ -14,23 +14,25 @@ public class LessonService {
     private Connection connection = DBConnectionProvider.getInstance().getConnection();
 
     public List<Lesson> getLessons() {
-        String sql = "SELECT * FROM lesson";
         List<Lesson> lessons = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
+        try {
+            String sql = "SELECT * FROM lesson";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                lessons.add(Lesson.builder()
+                Lesson lesson = Lesson.builder()
                         .id(resultSet.getInt("id"))
                         .name(resultSet.getString("name"))
-                        .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
                         .lecturerName(resultSet.getString("lecturer_name"))
                         .price(resultSet.getDouble("price"))
-                        .build());
+                        .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
+                        .build();
+                lessons.add(lesson);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return lessons;
     }

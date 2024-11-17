@@ -16,10 +16,11 @@ public class StudentService {
     private LessonService lessonService = new LessonService();
 
     public List<Student> getStudents() {
-        String sql = "SELECT * FROM student";
         List<Student> students = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
+        try {
+            String sql = "SELECT * FROM student";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Student student = Student.builder()
                         .id(resultSet.getInt("id"))
@@ -28,8 +29,8 @@ public class StudentService {
                         .email(resultSet.getString("email"))
                         .age(resultSet.getInt("age"))
                         .lesson(Lesson.builder()
-                                .id(resultSet.getInt("lesson_id"))
-                                .name(resultSet.getString("lesson_name"))
+                                .id(resultSet.getInt("id"))
+                                .name(resultSet.getString("name"))
                                 .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
                                 .lecturerName(resultSet.getString("lecturer_name"))
                                 .price(resultSet.getDouble("price"))
@@ -37,10 +38,8 @@ public class StudentService {
                         .build();
                 students.add(student);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return students;
     }
@@ -120,6 +119,7 @@ public class StudentService {
             ps.setString(2, student.getSurname());
             ps.setString(3, student.getEmail());
             ps.setInt(4, student.getAge());
+            ps.setInt(5,student.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
