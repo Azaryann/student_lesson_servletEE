@@ -1,19 +1,15 @@
 package am.azaryan.servlet;
 
 import am.azaryan.model.Lesson;
+import am.azaryan.model.User;
 import am.azaryan.service.LessonService;
 import am.azaryan.util.DateUtil;
-import lombok.SneakyThrows;
 
 import javax.servlet.ServletException;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
@@ -27,7 +23,7 @@ public class AddLessonServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws RuntimeException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws RuntimeException, IOException, ServletException {
         String name = req.getParameter("name");
         Date date;
         try {
@@ -39,14 +35,21 @@ public class AddLessonServlet extends HttpServlet {
         double price = Double.parseDouble(req.getParameter("price"));
 
         Lesson byName = lessonService.getByName(name);
-        if (byName == null) {
+        String message;
+        if (byName.getName() != null && byName.getName().equalsIgnoreCase(name)) {
+            message = "Lesson already exist";
+            req.setAttribute("lessonExist", message);
+            req.getRequestDispatcher("/WEB-INF/addLesson.jsp").forward(req, resp);
+        } else {
+            User user = (User) req.getSession().getAttribute("user");
             lessonService.add(Lesson.builder()
                     .name(name)
                     .duration(date)
                     .lecturerName(lecturerName)
                     .price(price)
+                    .user(user)
                     .build());
-            resp.sendRedirect("/index.jsp");
+            resp.sendRedirect("/lessons");
         }
     }
 }

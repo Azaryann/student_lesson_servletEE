@@ -1,6 +1,7 @@
 package am.azaryan.servlet;
 
 import am.azaryan.model.Lesson;
+import am.azaryan.model.User;
 import am.azaryan.service.LessonService;
 
 import javax.servlet.ServletException;
@@ -13,11 +14,13 @@ import java.util.List;
 
 @WebServlet(urlPatterns = "/lessons")
 public class LessonServlet extends HttpServlet {
+
     private final LessonService lessonService = new LessonService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Lesson> lessons = lessonService.getLessons();
+        User user = (User) req.getSession().getAttribute("user");
+        List<Lesson> lessons = lessonService.getLessonByUserId(user.getId());
         req.setAttribute("lessons", lessons);
         req.getRequestDispatcher("/WEB-INF/lessons.jsp").forward(req, resp);
     }

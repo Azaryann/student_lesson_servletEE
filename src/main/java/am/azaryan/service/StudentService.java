@@ -1,12 +1,9 @@
 package am.azaryan.service;
 
 import am.azaryan.db.DBConnectionProvider;
-import am.azaryan.model.Lesson;
 import am.azaryan.model.Student;
-import am.azaryan.util.DateUtil;
 
 import java.sql.*;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,44 +11,17 @@ public class StudentService {
 
     private Connection connection = DBConnectionProvider.getInstance().getConnection();
     private LessonService lessonService = new LessonService();
-
-    public List<Student> getStudents() {
-        List<Student> students = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM student";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                Student student = Student.builder()
-                        .id(resultSet.getInt("id"))
-                        .name(resultSet.getString("name"))
-                        .surname(resultSet.getString("surname"))
-                        .email(resultSet.getString("email"))
-                        .age(resultSet.getInt("age"))
-                        .lesson(Lesson.builder()
-                                .id(resultSet.getInt("id"))
-                                .name(resultSet.getString("name"))
-                                .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
-                                .lecturerName(resultSet.getString("lecturer_name"))
-                                .price(resultSet.getDouble("price"))
-                                .build())
-                        .build();
-                students.add(student);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return students;
-    }
+    private UserService userService = new UserService();
 
     public void add(Student student) {
-        String sql = "INSERT INTO student(name, surname, email, age, lesson_id) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO student(name, surname, email, age, lesson_id, user_id) VALUES(?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, student.getName());
             ps.setString(2, student.getSurname());
             ps.setString(3, student.getEmail());
             ps.setInt(4, student.getAge());
             ps.setInt(5, student.getLesson().getId());
+            ps.setInt(6, student.getUser().getId());
             ps.executeUpdate();
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -75,12 +45,36 @@ public class StudentService {
                         .email(resultSet.getString("email"))
                         .age(resultSet.getInt("age"))
                         .lesson(lessonService.getById(resultSet.getInt("lesson_id")))
+                        .user(userService.getUserById(resultSet.getInt("user_id")))
                         .build();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public List<Student> getStudents() {
+        String sql = "SELECT * FROM student";
+        List<Student> students = new ArrayList<>();
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                students.add(Student.builder()
+                        .id(resultSet.getInt("id"))
+                        .name(resultSet.getString("name"))
+                        .surname(resultSet.getString("surname"))
+                        .email(resultSet.getString("email"))
+                        .age(resultSet.getInt("age"))
+                        .lesson(lessonService.getById(resultSet.getInt("lesson_id")))
+                        .user(userService.getUserById(resultSet.getInt("user_id")))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
     }
 
     public void delete(int id) {
@@ -90,6 +84,29 @@ public class StudentService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Student> getStudentByUserId(int id) {
+        String sql = "SELECT * FROM student WHERE user_id =?";
+        List<Student> students = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                students.add(Student.builder()
+                        .id(resultSet.getInt("id"))
+                        .name(resultSet.getString("name"))
+                        .surname(resultSet.getString("surname"))
+                        .email(resultSet.getString("email"))
+                        .age(resultSet.getInt("age"))
+                        .lesson(lessonService.getById(resultSet.getInt("lesson_id")))
+                        .user(userService.getUserById(resultSet.getInt("user_id")))
+                        .build());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
     }
 
     public Student getById(int studentId) {
@@ -104,6 +121,7 @@ public class StudentService {
                         .email(resultSet.getString("email"))
                         .age(resultSet.getInt("age"))
                         .lesson(lessonService.getById(resultSet.getInt("lesson_id")))
+                        .user(userService.getUserById(resultSet.getInt("user_id")))
                         .build();
             }
         } catch (SQLException e) {

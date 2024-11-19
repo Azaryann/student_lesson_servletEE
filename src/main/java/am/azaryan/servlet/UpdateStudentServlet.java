@@ -42,7 +42,7 @@ public class UpdateStudentServlet extends HttpServlet {
                     .email(email)
                     .age(age)
                     .build());
-            resp.sendRedirect("/index.jsp");
+            resp.sendRedirect("/students");
         } catch (IOException | NumberFormatException e) {
             throw new RuntimeException(e);
         }

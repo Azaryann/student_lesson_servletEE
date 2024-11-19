@@ -13,13 +13,13 @@
 <table border="1">
     <tr>
         <th>
-            ID
-        </th>
-        <th>
             Name
         </th>
         <th>
             Duration
+        </th>
+        <th>
+            Added by
         </th>
         <th>
             LecturerName

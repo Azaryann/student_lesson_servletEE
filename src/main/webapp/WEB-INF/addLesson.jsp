@@ -5,7 +5,11 @@
 </head>
 <body>
 Add Lesson<br>
-<form method="post" action="/addLesson" enctype="multipart/form-data">
+<%String message = (String) request.getAttribute("lessonExist");%>
+<form method="post" action="/addLesson">
+    <%if (message != null) {%>
+    <span style="color: #232f39"><%=message%></span> <br>
+    <%}%>
     Lessons name: <input type="text" name="name"><br>
     Lessons duration: <input type="number" step="1" min="1" max="120" value="40" name="duration"><br>
     Lessons lecturer name: <input type="text" name="lecturer_name"><br>

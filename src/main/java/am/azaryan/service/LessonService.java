@@ -12,6 +12,7 @@ import java.util.List;
 public class LessonService {
 
     private Connection connection = DBConnectionProvider.getInstance().getConnection();
+    private UserService userService = new UserService();
 
     public List<Lesson> getLessons() {
         List<Lesson> lessons = new ArrayList<>();
@@ -26,6 +27,7 @@ public class LessonService {
                         .lecturerName(resultSet.getString("lecturer_name"))
                         .price(resultSet.getDouble("price"))
                         .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
+                        .user(userService.getUserById(resultSet.getInt("user_id")))
                         .build();
                 lessons.add(lesson);
             }
@@ -89,6 +91,7 @@ public class LessonService {
                         .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
                         .lecturerName(resultSet.getString("lecturer_name"))
                         .price(resultSet.getDouble("price"))
+                        .user(userService.getUserById(resultSet.getInt("user_id")))
                         .build();
             }
         } catch (SQLException e) {
@@ -110,6 +113,7 @@ public class LessonService {
                         .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
                         .lecturerName(resultSet.getString("lecturer_name"))
                         .price(resultSet.getDouble("price"))
+                        .user(userService.getUserById(resultSet.getInt("user_id")))
                         .build();
             }
         } catch (SQLException e) {
@@ -118,5 +122,33 @@ public class LessonService {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public List<Lesson> getLessonByUserId(int id) {
+        String sql = "SELECT * FROM lesson WHERE user_id = ?";
+        List<Lesson> lessons = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                try {
+                    lessons.add(Lesson.builder()
+                            .id(resultSet.getInt("id"))
+                            .name(resultSet.getString("name"))
+                            .duration(DateUtil.sqlStringTimeToDate(resultSet.getString("duration")))
+                            .lecturerName(resultSet.getString("lecturer_name"))
+                            .price(resultSet.getDouble("price"))
+                            .user(userService.getUserById(resultSet.getInt("user_id")))
+                            .build());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return lessons;
     }
 }

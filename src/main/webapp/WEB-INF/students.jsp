@@ -28,13 +28,10 @@
             Age
         </th>
         <th>
-            Lesson
+            Lecturer Name
         </th>
         <th>
-            Lesson Lecturer Name
-        </th>
-        <th>
-            Lesson Duration Time
+            Added by
         </th>
         <th>
             Delete
@@ -57,7 +54,7 @@
         </td>
         <td><%=student.getAge()%>
         </td>
-        <td><%=student.getLesson().getName() + " " + student.getLesson().getLecturerName() + " " + student.getLesson().getDuration()%>
+        <td><%=student.getLesson().getName() + " " + student.getLesson().getLecturerName()%>
         </td>
         <td><a href="/deleteStudent?id=<%=student.getId()%>">delete</a>
         </td>

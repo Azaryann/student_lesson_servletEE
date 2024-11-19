@@ -2,15 +2,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>lessons-students</title>
+    <title>Login</title>
 </head>
 <body>
-<h1><%= "Lessons/Students" %>
-</h1>
-<br/>
-<br>
-<br>
-<h1><a href="/students">Students</a></h1>
-<h1><a href="/lessons">Lessons</a></h1>
+<div>
+    <div>
+        <h2>Login</h2>
+        <% if (session.getAttribute("msg") != null) {%>
+        <span> <%=session.getAttribute("msg")%></span>
+        <%session.removeAttribute("msg");%>
+        <%}%>
+        <form action="login" method="post">
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/register"><button class="register-btn">Register</button></a></p>
+    </div>
+</div>
+
 </body>
 </html>

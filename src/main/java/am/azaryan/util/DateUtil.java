@@ -12,6 +12,13 @@ public class DateUtil {
     private static final SimpleDateFormat dateTimeLocalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private static final SimpleDateFormat SDF_WEB_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
+    public static Date converStringToDate (String date) throws ParseException {
+        return SDF_SQL.parse(date);
+    }
+
+    public static String convertDateToString (Date date) {
+        return SDF_SQL.format(date);
+    }
     public static Date fromStringToDate(String dateStr) throws ParseException {
         return SDF.parse(dateStr);
     }

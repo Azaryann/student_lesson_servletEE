@@ -1,6 +1,7 @@
 package am.azaryan.servlet;
 
 import am.azaryan.model.Student;
+import am.azaryan.model.User;
 import am.azaryan.service.StudentService;
 
 import javax.servlet.ServletException;
@@ -18,7 +19,8 @@ public class StudentServlet extends HttpServlet {
     private final StudentService studentService = new StudentService();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Student> students = studentService.getStudents();
+        User user = (User) req.getSession().getAttribute("user");
+        List<Student> students = studentService.getStudentByUserId(user.getId());
         req.setAttribute("students", students);
         req.getRequestDispatcher("/WEB-INF/students.jsp").forward(req, resp);
     }

@@ -25,7 +25,7 @@ public class UpdateLessonServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp){
         try {
             int id = Integer.parseInt(req.getParameter("id"));
             String name = req.getParameter("name");
@@ -40,7 +40,7 @@ public class UpdateLessonServlet extends HttpServlet {
                     .lecturerName(lecturerName)
                     .price(price)
                     .build());
-            resp.sendRedirect("/index.jsp");
+            resp.sendRedirect("/lessons");
         } catch (IOException | NumberFormatException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {
