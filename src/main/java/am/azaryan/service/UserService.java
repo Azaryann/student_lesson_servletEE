@@ -13,18 +13,13 @@ public class UserService {
 
     public void add(User user) {
         String sql = "INSERT INTO user (name, surname, email, password, user_type) VALUES (?,?,?,?,?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getSurname());
             preparedStatement.setString(3, user.getEmail());
             preparedStatement.setString(4, user.getPassword());
             preparedStatement.setString(5,user.getUserType().name());
             preparedStatement.executeUpdate();
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int id = generatedKeys.getInt(1);
-                user.setId(id);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

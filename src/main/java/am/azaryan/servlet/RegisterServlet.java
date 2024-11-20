@@ -1,6 +1,7 @@
 package am.azaryan.servlet;
 
 import am.azaryan.model.User;
+import am.azaryan.model.UserType;
 import am.azaryan.service.UserService;
 
 import javax.servlet.ServletException;
@@ -21,16 +22,17 @@ public class RegisterServlet extends HttpServlet {
         String surname = req.getParameter("surname");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-
+        UserType userType = UserType.valueOf(req.getParameter("user_type"));
         userService.add(User.builder()
                 .name(name)
                 .surname(surname)
                 .email(email)
                 .password(password)
+                .userType(userType)
                 .build());
 
         req.getSession().setAttribute("msg", "User registered");
-        resp.sendRedirect("/login");
+        resp.sendRedirect("/register");
     }
 
     @Override

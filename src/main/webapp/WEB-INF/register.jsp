@@ -25,6 +25,10 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
       </div>
+      <select name="user_type">
+        <option value="ADMIN">ADMIN</option>
+        <option value="USER">USER</option>
+      </select>
       <button type="submit">Register</button>
     </form>
   </div>
